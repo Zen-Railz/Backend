@@ -7,11 +7,27 @@ orbs:
 workflows:
   release-workflow:
     jobs:
-      - deployment
+      - test
+      - deploy:
+          requires:
+            - test
 
 jobs:
-  deployment:
-    description: Deploy Docker Image to Heroku
+  test:
+    docker:
+      - image: circleci/golang:1.17
+    steps:
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: go mod download
+      - run:
+          name: Run tests
+          command: gotestsum --junitfile test-result.xml $(go list ./... | circleci tests split)
+      - store_test_results:
+          path: ./
+  deploy:
+    description: Build and Deploy Docker Image to Heroku
     docker:
       - image: cimg/base:2021.07
     steps:

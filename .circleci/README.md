@@ -22,7 +22,7 @@ This declares the usage of the heroku orb, which will be used later in the confi
 This section contains a list of job, identified by their unique job name. This is only a declaration of the job. The sequence of the jobs to be ran is determined in our workflow.
 ```yml
 jobs: # Contains a list of jobs
-  deployment: # Job name
+  deploy: # Job name
     # Below are the configurations and steps to be used in this job
     docker: # The place where the steps are executed
       - image: cimg/base:2021.07 # Docker image to be used. Prefix cimg suggests that it is an image by CircleCI.
@@ -50,8 +50,11 @@ jobs: # Contains a list of jobs
 ```yml
 workflows:
   release-workflow: # Workflow name
-    jobs: # List of job names to be executed
-      - deployment # job name
+    jobs:           # List of job names to be executed
+      - test        # job name
+      - deploy:     # job name
+          requires:
+            - test  # deploy job to run after test job
 ```
 ![](../docs/circleci/Pipeline.png)
 

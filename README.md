@@ -11,5 +11,15 @@ This is the backend repository of our application.
 | Language | [Go](https://go.dev/) |
 | Framework | [Gin](https://github.com/gin-gonic/gin) |
 | Formatter | [gofmt](https://pkg.go.dev/cmd/gofmt) |
-| Test | [Gingko](https://github.com/onsi/ginkgo) <br> [Gomega](https://github.com/onsi/gomega) |
-| Mock | |
+| Test | [Gingko](https://github.com/onsi/ginkgo) <br> [Gomega](https://github.com/onsi/gomega) <br> [gotestsum](https://github.com/gotestyourself/gotestsum) |
+
+# Test
+## Testing Locally
+As we are using the Ginkgo testing framework, we can run all the tests in this module with any of the below commands in the root folder.
+```cmd
+ginkgo ./...
+```
+or
+```cmd
+go test -v ./...
+```
