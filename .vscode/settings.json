@@ -1,0 +1,11 @@
+{
+  "files.exclude": {
+    ".circleci": true,
+    ".dockerignore": true,
+    ".gitignore": true,
+    "Dockerfile": true,
+    "go.mod": true,
+    "go.sum": true,
+    // "**/*_test.go": true
+  }
+}

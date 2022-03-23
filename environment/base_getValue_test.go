@@ -2,7 +2,6 @@ package environment
 
 import (
 	"os"
-	"zenrailz/anomaly"
 	"zenrailz/code"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -10,7 +9,7 @@ import (
 )
 
 var _ = Describe("Getting environment variable", func() {
-	Context("when value is set", func() {
+	When("value is set", func() {
 		AfterEach(func() {
 			os.Unsetenv(mockEnvironmentVariableKey)
 		})
@@ -22,9 +21,12 @@ var _ = Describe("Getting environment variable", func() {
 		})
 	})
 
-	Context("when value is not set", func() {
+	When("value is not set", func() {
 		BeforeEach(func() {
 			os.Unsetenv(mockEnvironmentVariableKey)
+			DeferCleanup(func() {
+				os.Unsetenv(mockEnvironmentVariableKey)
+			})
 		})
 
 		It("should not have value", func() {
@@ -32,11 +34,9 @@ var _ = Describe("Getting environment variable", func() {
 			Expect(value).To(BeEmpty(), "Value is %v.", value)
 		})
 
-		It("should have ServiceError", func() {
+		It("should have EnvironmentVariableNotFound status code", func() {
 			_, err := getValue(mockEnvironmentVariableKey)
-			serviceError, ok := err.(*anomaly.ServiceError)
-			Expect(ok).To(BeTrue())
-			Expect(serviceError.Code).To(Equal(code.EnvironmentVariableNotFound))
+			Expect(err.Code).To(Equal(code.EnvironmentVariableNotFound))
 		})
 	})
 })

@@ -2,20 +2,23 @@ package anomaly
 
 import (
 	"fmt"
+	"runtime"
 )
 
 type ServiceError struct {
 	Code    string
 	Message string
-	Content interface{}
+	Annex   interface{}
+	history []errorHistory
+}
+
+type errorHistory struct {
+	functionName string
+	lineNumber   int
 }
 
 func (e *ServiceError) Error() string {
-	if e.Content == nil {
-		return fmt.Sprintf("(%s) %v", e.Code, e.Message)
-	} else {
-		return fmt.Sprintf("(%s) %v\n%+v", e.Code, e.Message, e.Content)
-	}
+	return fmt.Sprintf("(%s) %s", e.Code, e.Message)
 }
 
 func (e *ServiceError) Is(target error) bool {
@@ -25,4 +28,33 @@ func (e *ServiceError) Is(target error) bool {
 	} else {
 		return false
 	}
+}
+
+func (e *ServiceError) Trace() *ServiceError {
+	counter, _, lineNumber, success := runtime.Caller(1)
+
+	if success {
+		caller := runtime.FuncForPC(counter).Name()
+		e.history = append(e.history, errorHistory{
+			functionName: caller,
+			lineNumber:   lineNumber,
+		})
+	}
+
+	return e
+}
+
+func (e *ServiceError) Elaborate() string {
+	history := ""
+	for i, record := range e.history {
+		history += fmt.Sprintf("%d. %s | Line %d\n", i+1, record.functionName, record.lineNumber)
+	}
+
+	display := fmt.Sprintf("(%s) %s\n%s", e.Code, e.Message, history)
+
+	if e.Annex != nil {
+		display = fmt.Sprintf("%s%+v", display, e.Annex)
+	}
+
+	return display
 }

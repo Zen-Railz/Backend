@@ -44,7 +44,7 @@ jobs: # Contains a list of jobs
           process-types: web
 ```
 ### Lists of steps defined in the job
-![](../docs/circleci/Steps.png)
+![](../docs/image/circleci_steps.png)
 
 ## [Workflows](https://circleci.com/docs/2.0/configuration-reference/#workflows)
 ```yml
@@ -56,7 +56,7 @@ workflows:
           requires:
             - test  # deploy job to run after test job
 ```
-![](../docs/circleci/Pipeline.png)
+![](../docs/image/circleci_pipeline.png)
 
 <br>
 

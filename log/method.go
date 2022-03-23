@@ -25,7 +25,18 @@ func Info(message string) {
 func Error(message string, e interface{}) {
 	if level <= err {
 		logger.SetPrefix("[ERR] ")
-		note := fmt.Sprintf("%v %+v\n%v", message, e, string(debug.Stack()))
+		note := ""
+
+		if message != "" {
+			note += message
+		}
+
+		if e != nil {
+			note = fmt.Sprintf("%s\n%+v", note, e)
+		}
+
+		note = fmt.Sprintf("%s\n%s", note, string(debug.Stack()))
+
 		logger.Println(note)
 	}
 }

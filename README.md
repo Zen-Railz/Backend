@@ -6,12 +6,36 @@ This is the backend repository of our application.
 |||
 |-|-|
 | Repository | [GitHub](https://github.com/Zen-Railz/Backend) |
-| Continuous Integration | [CircleCI](https://app.circleci.com/pipelines/github/Zen-Railz/Backend) |
-| Hosting | [Heroku with Docker](https://devcenter.heroku.com/articles/container-registry-and-runtime) |
 | Language | [Go](https://go.dev/) |
 | Framework | [Gin](https://github.com/gin-gonic/gin) |
-| Formatter | [gofmt](https://pkg.go.dev/cmd/gofmt) |
+| Hosting | [Heroku with Docker](https://devcenter.heroku.com/articles/container-registry-and-runtime) |
+| Database | [Heroku Postgres](https://www.heroku.com/postgres) |
+| Continuous Integration | [CircleCI](https://app.circleci.com/pipelines/github/Zen-Railz/Backend) |
 | Test | [Gingko](https://github.com/onsi/ginkgo) <br> [Gomega](https://github.com/onsi/gomega) <br> [gotestsum](https://github.com/gotestyourself/gotestsum) |
+| Formatter | [gofmt](https://pkg.go.dev/cmd/gofmt) |
+|||
+
+# Preparation
+## Installation of dependencies
+```cmd
+go mod download
+```
+
+# Development
+The development of this project is on a windows machine. Steps described in the following sections will be based on windows commands.
+### Setup - Local Environment
+1. Ensure that port number is set in the environment variable. The local server will be listening on this port.
+```cmd
+SET PORT=3000
+```
+2. Ensure that database url is set in the environment variable.
+```cmd
+SET DATABASE_URL=<uri>
+```
+3. Run the project from the root directory.
+```cmd
+go run main.go
+```
 
 # Test
 ## Testing Locally
@@ -23,3 +47,16 @@ or
 ```cmd
 go test -v ./...
 ```
+To view test files, turn on the visibility of `_test.go` files in the `.vscode/settings.json` file by setting the config to false, or simply comment it.
+```json
+{
+  "files.exclude": {
+    // "**/*_test.go": true
+  }
+}
+```
+
+# Deployment
+1. Create a docker file
+2. Create a circleci yml file
+3. Push code to code repository

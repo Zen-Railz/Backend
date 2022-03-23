@@ -1,9 +1,9 @@
 package route
 
 import (
-	"github.com/gin-gonic/gin"
-
 	"zenrailz/route/nexus"
+
+	"github.com/gin-gonic/gin"
 )
 
 func Configure(engine *gin.Engine) {
@@ -13,5 +13,11 @@ func Configure(engine *gin.Engine) {
 	})
 
 	health := engine.Group("/health")
-	health.GET("/", nexus.HandleHealthStatus())
+	health.GET("/", nexus.HealthStatus())
+	if gin.IsDebugging() {
+		health.GET("/database", nexus.DatabaseStatus())
+	}
+
+	railway := engine.Group("/railway")
+	railway.GET("/stations", nexus.RailwayStations())
 }

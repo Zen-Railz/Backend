@@ -7,7 +7,7 @@ import (
 	"zenrailz/code"
 )
 
-func getValue(key string) (string, error) {
+func getValue(key string) (string, *anomaly.ServiceError) {
 	value, found := os.LookupEnv(key)
 
 	if !found {
@@ -15,7 +15,7 @@ func getValue(key string) (string, error) {
 			Code:    code.EnvironmentVariableNotFound,
 			Message: fmt.Sprintf("%s not found", key),
 		}
-		return "", err
+		return "", err.Trace()
 	}
 
 	return value, nil
