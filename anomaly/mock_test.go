@@ -1,6 +1,8 @@
 package anomaly
 
 const (
-	mockServiceErrorCode    = "mockServiceErrorCode"
-	mockServiceErrorMessage = "mockServiceErrorMessage"
+	mockServiceErrorCode         = "mockServiceErrorCode"
+	mockServiceErrorMessage      = "mockServiceErrorMessage"
+	mockServiceErrorFunctionName = "mockServiceErrorFunctionName"
+	mockServiceErrorLineNumber   = 0
 )

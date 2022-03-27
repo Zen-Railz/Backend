@@ -10,6 +10,7 @@ import (
 
 var _ = Describe("Comparing ServiceError equality", func() {
 	var serviceError error
+
 	BeforeEach(func() {
 		serviceError = &ServiceError{
 			Code:    mockServiceErrorCode,
