@@ -1,9 +1,9 @@
-package database
+package railway
 
 import (
-	"database/sql"
 	"zenrailz/anomaly"
 	"zenrailz/code"
+	"zenrailz/repository/common"
 )
 
 type Station struct {
@@ -12,12 +12,12 @@ type Station struct {
 	Number int
 }
 
-func GetStations(db *sql.DB) ([]Station, *anomaly.ServiceError) {
+func (r *Repository) Stations() ([]Station, *anomaly.ServiceError) {
 	stations := []Station{}
 
-	rows, queryErr := db.Query("select name, code, number from station order by name, code, number")
+	rows, queryErr := r.database.Query("select name, code, number from station order by name, code, number")
 	if queryErr != nil {
-		err := parseError(code.DatabaseQueryFailure, "Unable to get stations.", queryErr)
+		err := common.ParseError(code.DatabaseQueryFailure, "Unable to get stations.", queryErr)
 		return stations, err.Trace()
 	}
 	defer rows.Close()
@@ -30,7 +30,7 @@ func GetStations(db *sql.DB) ([]Station, *anomaly.ServiceError) {
 		)
 
 		if scanErr := rows.Scan(&stationName, &stationCode, &stationNumber); scanErr != nil {
-			err := parseError(code.DatabaseRowScanFailure, "Unable to read a station.", scanErr)
+			err := common.ParseError(code.DatabaseRowScanFailure, "Unable to read a station.", scanErr)
 			return stations, err.Trace()
 		}
 
@@ -44,7 +44,7 @@ func GetStations(db *sql.DB) ([]Station, *anomaly.ServiceError) {
 	}
 
 	if rowErr := rows.Err(); rowErr != nil {
-		err := parseError(code.DatabaseRowError, "Database Row Operation encountered an error.", rowErr)
+		err := common.ParseError(code.DatabaseRowError, "Database Row Operation encountered an error.", rowErr)
 		return stations, err.Trace()
 	}
 

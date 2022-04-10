@@ -13,6 +13,7 @@ This is the backend repository of our application.
 | Continuous Integration | [CircleCI](https://app.circleci.com/pipelines/github/Zen-Railz/Backend) |
 | Test | [Gingko](https://github.com/onsi/ginkgo) <br> [Gomega](https://github.com/onsi/gomega) <br> [gotestsum](https://github.com/gotestyourself/gotestsum) |
 | Formatter | [gofmt](https://pkg.go.dev/cmd/gofmt) |
+| Dependency Injection | [Wire](https://github.com/google/wire) |
 |||
 
 # Preparation
@@ -23,6 +24,7 @@ go mod download
 
 # Development
 The development of this project is on a windows machine. Steps described in the following sections will be based on windows commands.
+
 ### Setup - Local Environment
 1. Ensure that port number is set in the environment variable. The local server will be listening on this port.
 ```cmd
@@ -35,6 +37,14 @@ SET DATABASE_URL=<uri>
 3. Run the project from the root directory.
 ```cmd
 go run main.go
+```
+
+### Dependency Injection
+As dependency injection is one of the most important design principles to reduce tight-coupling among components, we made use of Google's code generation tool, Wire, to achieve this.
+
+To generate the dependency graph, run in the root directory
+```cmd
+wire ./...
 ```
 
 # Test

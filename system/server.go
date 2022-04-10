@@ -2,25 +2,44 @@ package system
 
 import (
 	"zenrailz/environment"
-	"zenrailz/route"
+	"zenrailz/log"
+	"zenrailz/repository/database"
 
 	"github.com/gin-gonic/gin"
 )
 
-type Server struct {
-	engine *gin.Engine
+func Start() {
+	log.SetLevel()
+	logger := log.New()
+
+	defer recuperate(logger)
+
+	run(logger)
 }
 
-func (s *Server) Run() {
-	s.engine = gin.Default()
+func run(logger log.Logger) {
+	db, err := database.New()
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
 
-	route.Configure(s.engine)
+	engine := gin.Default()
+	nexus := InitialiseNexus(logger, db)
+
+	ConfigureRoute(engine, nexus)
 
 	port, err := environment.ServerPort()
 
 	if err == nil {
-		s.engine.Run(":" + port)
+		engine.Run(":" + port)
 	} else {
 		panic(err)
+	}
+}
+
+func recuperate(logger log.Logger) {
+	if err := recover(); err != nil {
+		logger.Error("Panic", err)
 	}
 }

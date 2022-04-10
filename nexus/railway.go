@@ -2,14 +2,13 @@ package nexus
 
 import (
 	"net/http"
-	"zenrailz/service/railway"
 
 	"github.com/gin-gonic/gin"
 )
 
-func RailwayStations() gin.HandlerFunc {
+func (s *Store) RailwayStations() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		result, err := railway.Stations()
+		result, err := s.railwaySvc.Stations()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, ErrorResponse{
 				Code:    err.Code,

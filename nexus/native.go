@@ -2,21 +2,20 @@ package nexus
 
 import (
 	"net/http"
-	"zenrailz/service/health"
 
 	"github.com/gin-gonic/gin"
 )
 
-func HealthStatus() gin.HandlerFunc {
+func (s *Store) SystemHealth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		response := health.Status()
+		response := s.nativeSvc.SystemHealth()
 		c.JSON(http.StatusOK, response)
 	}
 }
 
-func DatabaseStatus() gin.HandlerFunc {
+func (s *Store) DatabaseHealth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		response := health.Database()
+		response := s.nativeSvc.DatabaseHealth()
 		c.JSON(http.StatusOK, response)
 	}
 }

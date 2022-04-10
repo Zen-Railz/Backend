@@ -8,6 +8,8 @@ require (
 	github.com/onsi/gomega v1.18.1
 )
 
+require github.com/google/wire v0.5.0
+
 require (
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.13.0 // indirect

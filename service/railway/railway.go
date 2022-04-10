@@ -2,24 +2,13 @@ package railway
 
 import (
 	"zenrailz/anomaly"
-	"zenrailz/data/database"
-	"zenrailz/log"
 )
 
-func Stations() (interface{}, *anomaly.ServiceError) {
-
-	db, dbConErr := database.Connect()
-	if dbConErr != nil {
-		dbConErr.Trace()
-		log.Error(dbConErr.Elaborate(), nil)
-		return nil, dbConErr
-	}
-	defer db.Close()
-
-	dbStations, dbResErr := database.GetStations(db)
+func (s *Service) Stations() (interface{}, *anomaly.ServiceError) {
+	dbStations, dbResErr := s.railwayRepo.Stations()
 	if dbResErr != nil {
 		dbResErr.Trace()
-		log.Error(dbResErr.Elaborate(), nil)
+		s.logger.Error(dbResErr.Elaborate(), nil)
 		return nil, dbResErr
 	}
 
