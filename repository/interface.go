@@ -1,14 +1,14 @@
 package repository
 
 import (
-	"zenrailz/anomaly"
+	"zenrailz/errorr"
 	"zenrailz/repository/railway"
 )
 
 type Database interface {
-	Ping() *anomaly.ServiceError
+	Ping() errorr.Entity
 }
 
 type Railway interface {
-	Stations() ([]railway.Station, *anomaly.ServiceError)
+	Stations() ([]railway.Station, errorr.Entity)
 }

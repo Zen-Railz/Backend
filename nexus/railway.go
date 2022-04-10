@@ -11,7 +11,7 @@ func (s *Store) RailwayStations() gin.HandlerFunc {
 		result, err := s.railwaySvc.Stations()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, ErrorResponse{
-				Code:    err.Code,
+				Code:    err.Code(),
 				Message: "Unable to retrieve stations.",
 			})
 		} else {

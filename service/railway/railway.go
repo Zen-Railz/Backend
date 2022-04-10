@@ -1,10 +1,8 @@
 package railway
 
-import (
-	"zenrailz/anomaly"
-)
+import "zenrailz/errorr"
 
-func (s *Service) Stations() (interface{}, *anomaly.ServiceError) {
+func (s *Service) Stations() (interface{}, errorr.Entity) {
 	dbStations, dbResErr := s.railwayRepo.Stations()
 	if dbResErr != nil {
 		dbResErr.Trace()

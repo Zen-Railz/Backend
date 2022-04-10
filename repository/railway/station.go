@@ -1,8 +1,8 @@
 package railway
 
 import (
-	"zenrailz/anomaly"
 	"zenrailz/code"
+	"zenrailz/errorr"
 	"zenrailz/repository/common"
 )
 
@@ -12,7 +12,7 @@ type Station struct {
 	Number int
 }
 
-func (r *Repository) Stations() ([]Station, *anomaly.ServiceError) {
+func (r *Repository) Stations() ([]Station, errorr.Entity) {
 	stations := []Station{}
 
 	rows, queryErr := r.database.Query("select name, code, number from station order by name, code, number")

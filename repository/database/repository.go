@@ -2,8 +2,8 @@ package database
 
 import (
 	"database/sql"
-	"zenrailz/anomaly"
 	"zenrailz/code"
+	"zenrailz/errorr"
 	"zenrailz/repository/common"
 )
 
@@ -17,7 +17,7 @@ type Repository struct {
 	database *sql.DB
 }
 
-func (d *Repository) Ping() *anomaly.ServiceError {
+func (d *Repository) Ping() errorr.Entity {
 	if pingErr := d.database.Ping(); pingErr != nil {
 		err := common.ParseError(code.DatabasePingFailure, "Unable to reach database. Database did not respond.", pingErr)
 		return err.Trace()

@@ -1,15 +1,17 @@
 package environment
 
-import "zenrailz/anomaly"
+import (
+	"zenrailz/errorr"
+)
 
-func ServerPort() (string, *anomaly.ServiceError) {
+func ServerPort() (string, errorr.Entity) {
 	return getValue("PORT")
 }
 
-func DatabaseUri() (string, *anomaly.ServiceError) {
+func DatabaseUri() (string, errorr.Entity) {
 	return getValue("DATABASE_URL")
 }
 
-func LogLevel() (string, *anomaly.ServiceError) {
+func LogLevel() (string, errorr.Entity) {
 	return getValue("LOG_LEVEL")
 }

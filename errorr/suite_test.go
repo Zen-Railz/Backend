@@ -1,4 +1,4 @@
-package anomaly
+package errorr
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestAnomaly(t *testing.T) {
+func TestErrorr(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Anomaly Test Suite")
+	RunSpecs(t, "Errorr Test Suite")
 }

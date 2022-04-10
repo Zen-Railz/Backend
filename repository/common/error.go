@@ -2,14 +2,11 @@ package common
 
 import (
 	"fmt"
-	"zenrailz/anomaly"
+	"zenrailz/errorr"
 )
 
-func ParseError(code string, message string, err error) *anomaly.ServiceError {
+func ParseError(code string, message string, err error) errorr.Entity {
 	errMsg := fmt.Sprintf("%s %s", message, err.Error())
 
-	return &anomaly.ServiceError{
-		Code:    code,
-		Message: errMsg,
-	}
+	return errorr.New(code, errMsg, nil)
 }

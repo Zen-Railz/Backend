@@ -36,7 +36,7 @@ var _ = Describe("Getting environment variable", func() {
 
 		It("should have EnvironmentVariableNotFound status code", func() {
 			_, err := getValue(mockEnvironmentVariableKey)
-			Expect(err.Code).To(Equal(code.EnvironmentVariableNotFound))
+			Expect(err.Code()).To(Equal(code.EnvironmentVariableNotFound))
 		})
 	})
 })

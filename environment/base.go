@@ -3,19 +3,20 @@ package environment
 import (
 	"fmt"
 	"os"
-	"zenrailz/anomaly"
 	"zenrailz/code"
+	"zenrailz/errorr"
 )
 
-func getValue(key string) (string, *anomaly.ServiceError) {
+func getValue(key string) (string, errorr.Entity) {
 	value, found := os.LookupEnv(key)
 
 	if !found {
-		err := &anomaly.ServiceError{
-			Code:    code.EnvironmentVariableNotFound,
-			Message: fmt.Sprintf("%s not found", key),
-		}
-		return "", err.Trace()
+		err := errorr.New(
+			code.EnvironmentVariableNotFound,
+			fmt.Sprintf("%s not found", key),
+			nil,
+		)
+		return "", err
 	}
 
 	return value, nil

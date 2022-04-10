@@ -1,4 +1,4 @@
-package anomaly
+package errorr
 
 import (
 	"fmt"
@@ -10,12 +10,12 @@ import (
 var _ = Describe("Printing Error", func() {
 	When("code and message exist", func() {
 		It("should be well formatted", func() {
-			err := &ServiceError{
-				Code:    mockServiceErrorCode,
-				Message: mockServiceErrorMessage,
+			err := &entity{
+				code:    mockErrorCode,
+				message: mockErrorMessage,
 			}
 			output := err.Error()
-			Expect(output).To(Equal(fmt.Sprintf("(%s) %s", mockServiceErrorCode, mockServiceErrorMessage)))
+			Expect(output).To(Equal(fmt.Sprintf("(%s) %s", mockErrorCode, mockErrorMessage)))
 		})
 	})
 })

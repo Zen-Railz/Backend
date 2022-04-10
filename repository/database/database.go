@@ -2,15 +2,15 @@ package database
 
 import (
 	"database/sql"
-	"zenrailz/anomaly"
 	"zenrailz/code"
 	"zenrailz/environment"
+	"zenrailz/errorr"
 	"zenrailz/repository/common"
 
 	_ "github.com/lib/pq"
 )
 
-func New() (*sql.DB, *anomaly.ServiceError) {
+func New() (*sql.DB, errorr.Entity) {
 	uri, uriErr := environment.DatabaseUri()
 	if uriErr != nil {
 		return nil, uriErr.Trace()

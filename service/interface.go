@@ -1,7 +1,7 @@
 package service
 
 import (
-	"zenrailz/anomaly"
+	"zenrailz/errorr"
 	"zenrailz/service/native"
 )
 
@@ -11,5 +11,5 @@ type Native interface {
 }
 
 type Railway interface {
-	Stations() (interface{}, *anomaly.ServiceError)
+	Stations() (interface{}, errorr.Entity)
 }
