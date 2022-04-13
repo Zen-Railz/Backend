@@ -8,13 +8,13 @@ import (
 )
 
 var _ = Describe("Checking the health of the database", func() {
-	var serviceUnderTest Service
+	var serviceUnderTest *Service
 
 	When("able to ping database", func() {
 		BeforeEach(func() {
 			mockLogger := mock.NewLogger()
 			mockDbRepo := mock.NewDatabaseRepository()
-			serviceUnderTest = *NewService(mockLogger, mockDbRepo)
+			serviceUnderTest = NewService(mockLogger, mockDbRepo)
 		})
 
 		It("should return status as healthy", func() {
@@ -33,7 +33,7 @@ var _ = Describe("Checking the health of the database", func() {
 			mockLogger := mock.NewLogger()
 			mockDbRepo := mock.NewDatabaseRepository().
 				SetPingError()
-			serviceUnderTest = *NewService(mockLogger, mockDbRepo)
+			serviceUnderTest = NewService(mockLogger, mockDbRepo)
 		})
 
 		It("should return status as unhealthy", func() {
