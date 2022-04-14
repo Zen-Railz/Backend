@@ -91,7 +91,7 @@ var _ = Describe("Structuring stations as output", func() {
 			stations, _ = rawStations.(map[string]map[string]interface{})
 		})
 
-		It("should have stations total count same as total number of unqie station names", func() {
+		It("should have stations total count same as total number of unique station names", func() {
 			Expect(len(stations)).To(Equal(6))
 		})
 
