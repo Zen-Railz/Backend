@@ -18,6 +18,5 @@ func (d *DatabaseRepository) SetPingError() *DatabaseRepository {
 	d.pingError = NewError().
 		SetCode(ErrorCode).
 		SetStackTraceMessage(ErrorStackTraceMessage)
-
 	return d
 }
