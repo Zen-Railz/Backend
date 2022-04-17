@@ -6,8 +6,6 @@ import (
 	"runtime/debug"
 )
 
-type logger struct{}
-
 func New() *logger {
 	return &logger{}
 }

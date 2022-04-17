@@ -6,14 +6,6 @@ import (
 	"zenrailz/repository/common"
 )
 
-type Station struct {
-	Name     string
-	Prefix   string
-	Number   int
-	Line     string
-	IsActive bool
-}
-
 func (r *Repository) Stations() ([]Station, errorr.Entity) {
 	stations := []Station{}
 

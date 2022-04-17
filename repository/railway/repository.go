@@ -9,7 +9,3 @@ func NewRepository(db *sql.DB) *Repository {
 		database: db,
 	}
 }
-
-type Repository struct {
-	database *sql.DB
-}

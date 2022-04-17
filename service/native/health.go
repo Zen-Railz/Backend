@@ -1,8 +1,17 @@
 package native
 
-type DatabaseState struct {
-	Status  string `json:"status"`
-	Message string `json:"message,omitempty"`
+func (s *Service) SystemHealth() *SystemState {
+	overallStatus := Healthy
+	databaseHealth := s.DatabaseHealth()
+
+	if databaseHealth.Status == Unhealthy {
+		overallStatus = Unhealthy
+	}
+
+	return &SystemState{
+		Status:   overallStatus,
+		Database: databaseHealth.Status,
+	}
 }
 
 func (s *Service) DatabaseHealth() *DatabaseState {

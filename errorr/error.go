@@ -13,18 +13,6 @@ func New(code string, message string, annex interface{}) *entity {
 	}).trace(2)
 }
 
-type entity struct {
-	code       string
-	message    string
-	annex      interface{}
-	stackTrace []StackTrace
-}
-
-type StackTrace struct {
-	FunctionName string
-	LineNumber   int
-}
-
 func (e *entity) Code() string {
 	return e.code
 }

@@ -13,10 +13,6 @@ func NewRepository(db *sql.DB) *Repository {
 	}
 }
 
-type Repository struct {
-	database *sql.DB
-}
-
 func (d *Repository) Ping() errorr.Entity {
 	if pingErr := d.database.Ping(); pingErr != nil {
 		err := common.ParseError(code.DatabasePingFailure, "Unable to reach database. Database did not respond.", pingErr)

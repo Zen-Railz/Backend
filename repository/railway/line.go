@@ -7,14 +7,6 @@ import (
 	"zenrailz/repository/common"
 )
 
-type Line struct {
-	Name         string
-	Code         string
-	Type         string
-	IsActive     bool
-	Announcement string
-}
-
 func (r *Repository) Lines() ([]Line, errorr.Entity) {
 	lines := []Line{}
 
