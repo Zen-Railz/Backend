@@ -23,10 +23,10 @@ func (r *RailwayRepository) EmptyStations() *RailwayRepository {
 	return r
 }
 
-func (r *RailwayRepository) AddStation(name string, code string, number int) *RailwayRepository {
+func (r *RailwayRepository) AddStation(name string, prefix string, number int) *RailwayRepository {
 	r.stations = append(r.stations, railway.Station{
 		Name:   name,
-		Code:   code,
+		Prefix: prefix,
 		Number: number,
 	})
 	return r

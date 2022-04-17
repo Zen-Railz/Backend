@@ -13,27 +13,27 @@ func (s *Service) Stations() (interface{}, errorr.Entity) {
 	stations := make(map[string]map[string]interface{})
 	for _, dbStation := range dbStations {
 		stationName := dbStation.Name
-		stationCode := dbStation.Code
+		stationPrefix := dbStation.Prefix
 		stationNumber := dbStation.Number
 
 		station, stationExist := stations[stationName]
 		if stationExist {
-			lineNumbers, lineExist := station[stationCode]
+			lineNumbers, lineExist := station[stationPrefix]
 			if lineExist {
 				switch v := lineNumbers.(type) {
 				case int:
-					station[stationCode] = []int{v, stationNumber}
+					station[stationPrefix] = []int{v, stationNumber}
 				case []int:
 					numberList := lineNumbers.([]int)
 					numberList = append(numberList, stationNumber)
-					station[stationCode] = numberList
+					station[stationPrefix] = numberList
 				}
 			} else {
-				station[stationCode] = stationNumber
+				station[stationPrefix] = stationNumber
 			}
 		} else {
 			newStation := make(map[string]interface{})
-			newStation[stationCode] = stationNumber
+			newStation[stationPrefix] = stationNumber
 			stations[stationName] = newStation
 		}
 	}

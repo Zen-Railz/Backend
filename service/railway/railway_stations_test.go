@@ -67,25 +67,25 @@ var _ = Describe("Structuring stations as output", func() {
 		echoStationName := "Station Echo"
 		foxtrotStationName := "Station Foxtrot"
 
-		northEastLineCode := "NEL"
-		eastWestLineCode := "EWL"
-		thomsonEastCoastLineCode := "TEL"
-		circleLineCode := "CCL"
+		northEastLineStationPrefix := "NE"
+		eastWestLineStationPrefix := "EW"
+		thomsonEastCoastLineStationPrefix := "TE"
+		circleLineStationPrefix := "CC"
 
 		BeforeEach(func() {
 			mockRailwayRepo := mock.NewRailwayRepository().
 				EmptyStations().
-				AddStation(alphaStationName, northEastLineCode, 1).
-				AddStation(alphaStationName, northEastLineCode, 20).
-				AddStation(bravoStationName, northEastLineCode, 2).
-				AddStation(charlieStationName, northEastLineCode, 3).
-				AddStation(deltaStationName, northEastLineCode, 4).
-				AddStation(deltaStationName, eastWestLineCode, 15).
-				AddStation(echoStationName, northEastLineCode, 5).
-				AddStation(echoStationName, thomsonEastCoastLineCode, 7).
-				AddStation(foxtrotStationName, northEastLineCode, 6).
-				AddStation(foxtrotStationName, circleLineCode, 1).
-				AddStation(foxtrotStationName, circleLineCode, 30)
+				AddStation(alphaStationName, northEastLineStationPrefix, 1).
+				AddStation(alphaStationName, northEastLineStationPrefix, 20).
+				AddStation(bravoStationName, northEastLineStationPrefix, 2).
+				AddStation(charlieStationName, northEastLineStationPrefix, 3).
+				AddStation(deltaStationName, northEastLineStationPrefix, 4).
+				AddStation(deltaStationName, eastWestLineStationPrefix, 15).
+				AddStation(echoStationName, northEastLineStationPrefix, 5).
+				AddStation(echoStationName, thomsonEastCoastLineStationPrefix, 7).
+				AddStation(foxtrotStationName, northEastLineStationPrefix, 6).
+				AddStation(foxtrotStationName, circleLineStationPrefix, 1).
+				AddStation(foxtrotStationName, circleLineStationPrefix, 30)
 			serviceUnderTest = NewService(mockLogger, mockRailwayRepo)
 			rawStations, _ := serviceUnderTest.Stations()
 			stations, _ = rawStations.(map[string]map[string]interface{})
@@ -96,33 +96,33 @@ var _ = Describe("Structuring stations as output", func() {
 		})
 
 		It("should output stations with multiple stops on the same line as an array", func() {
-			alphaStationNumbers := stations[alphaStationName][northEastLineCode].([]int)
+			alphaStationNumbers := stations[alphaStationName][northEastLineStationPrefix].([]int)
 			Expect(len(alphaStationNumbers)).To(Equal(2))
 
-			foxtrotStationNumbers := stations[foxtrotStationName][circleLineCode].([]int)
+			foxtrotStationNumbers := stations[foxtrotStationName][circleLineStationPrefix].([]int)
 			Expect(len(foxtrotStationNumbers)).To(Equal(2))
 		})
 
 		It("should output stations with single stop as the station number", func() {
-			bravoStationNumber := stations[bravoStationName][northEastLineCode].(int)
+			bravoStationNumber := stations[bravoStationName][northEastLineStationPrefix].(int)
 			Expect(bravoStationNumber).To(Equal(2))
 
-			charlieStationNumber := stations[charlieStationName][northEastLineCode].(int)
+			charlieStationNumber := stations[charlieStationName][northEastLineStationPrefix].(int)
 			Expect(charlieStationNumber).To(Equal(3))
 
-			deltaNorthEastStationNumber := stations[deltaStationName][northEastLineCode].(int)
+			deltaNorthEastStationNumber := stations[deltaStationName][northEastLineStationPrefix].(int)
 			Expect(deltaNorthEastStationNumber).To(Equal(4))
 
-			deltaEastWestStationNumber := stations[deltaStationName][eastWestLineCode].(int)
+			deltaEastWestStationNumber := stations[deltaStationName][eastWestLineStationPrefix].(int)
 			Expect(deltaEastWestStationNumber).To(Equal(15))
 
-			echoNorthEastStationNumber := stations[echoStationName][northEastLineCode].(int)
+			echoNorthEastStationNumber := stations[echoStationName][northEastLineStationPrefix].(int)
 			Expect(echoNorthEastStationNumber).To(Equal(5))
 
-			echoThomsonEastCoastStationNumber := stations[echoStationName][thomsonEastCoastLineCode].(int)
+			echoThomsonEastCoastStationNumber := stations[echoStationName][thomsonEastCoastLineStationPrefix].(int)
 			Expect(echoThomsonEastCoastStationNumber).To(Equal(7))
 
-			foxtrotNorthEastStationNumber := stations[foxtrotStationName][northEastLineCode].(int)
+			foxtrotNorthEastStationNumber := stations[foxtrotStationName][northEastLineStationPrefix].(int)
 			Expect(foxtrotNorthEastStationNumber).To(Equal(6))
 		})
 
