@@ -1,6 +1,8 @@
 package railway
 
-import "zenrailz/errorr"
+import (
+	"zenrailz/errorr"
+)
 
 func (s *Service) Stations() (interface{}, errorr.Entity) {
 	dbStations, dbResErr := s.railwayRepo.Stations()
@@ -39,4 +41,26 @@ func (s *Service) Stations() (interface{}, errorr.Entity) {
 	}
 
 	return stations, nil
+}
+
+func (s *Service) Lines() ([]Line, errorr.Entity) {
+	dbLines, dbResErr := s.railwayRepo.Lines()
+	if dbResErr != nil {
+		dbResErr.Trace()
+		s.logger.Error(dbResErr.Elaborate(), nil)
+		return nil, dbResErr
+	}
+
+	lines := []Line{}
+	for _, dbLine := range dbLines {
+		lines = append(lines, Line{
+			Name:         dbLine.Name,
+			Code:         dbLine.Code,
+			Type:         dbLine.Type,
+			IsActive:     dbLine.IsActive,
+			Announcement: dbLine.Announcement,
+		})
+	}
+
+	return lines, nil
 }

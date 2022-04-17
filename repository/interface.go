@@ -11,4 +11,5 @@ type Database interface {
 
 type Railway interface {
 	Stations() ([]railway.Station, errorr.Entity)
+	Lines() ([]railway.Line, errorr.Entity)
 }
