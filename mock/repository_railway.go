@@ -10,12 +10,12 @@ func NewRailwayRepository() *RailwayRepository {
 }
 
 type RailwayRepository struct {
-	stations    []railway.Station
+	stations    map[string]railway.Station
 	lines       []railway.Line
 	sourceError errorr.Entity
 }
 
-func (r *RailwayRepository) Stations() ([]railway.Station, errorr.Entity) {
+func (r *RailwayRepository) Stations() (map[string]railway.Station, errorr.Entity) {
 	return r.stations, r.sourceError
 }
 
@@ -24,16 +24,29 @@ func (r *RailwayRepository) Lines() ([]railway.Line, errorr.Entity) {
 }
 
 func (r *RailwayRepository) EmptyStations() *RailwayRepository {
-	r.stations = []railway.Station{}
+	r.stations = make(map[string]railway.Station)
 	return r
 }
 
 func (r *RailwayRepository) AddStation(name string, prefix string, number int) *RailwayRepository {
-	r.stations = append(r.stations, railway.Station{
-		Name:   name,
-		Prefix: prefix,
-		Number: number,
-	})
+	station, stationExist := r.stations[name]
+	if stationExist {
+		station.Identifiers = append(station.Identifiers, railway.StationIdentity{
+			Prefix: prefix,
+			Number: number,
+		})
+		r.stations[name] = station
+	} else {
+		r.stations[name] = railway.Station{
+			Name: name,
+			Identifiers: []railway.StationIdentity{
+				{
+					Prefix: prefix,
+					Number: number,
+				},
+			},
+		}
+	}
 	return r
 }
 

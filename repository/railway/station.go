@@ -6,25 +6,50 @@ import (
 	"zenrailz/repository/common"
 )
 
-func (r *Repository) Stations() ([]Station, errorr.Entity) {
-	stations := []Station{}
+func (r *Repository) Stations() (map[string]Station, errorr.Entity) {
+	stations := make(map[string]Station)
 
 	rows, queryErr := r.database.Query("select s.name, s.prefix, s.number, s.is_active, l.name from station s, line l where s.line = l.code order by s.name, s.prefix, s.number")
 	if queryErr != nil {
-		err := common.ParseError(code.DatabaseQueryFailure, "Unable to get stations.", queryErr)
+		err := common.ParseError(code.DatabaseQueryFailure, "Unable to get stations from database.", queryErr)
 		return stations, err.Trace()
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		station := Station{}
+		var stationName string
+		var stationIdentityPrefix string
+		var stationIdentityNumber int
+		var stationIdentityIsActive bool
+		var stationIdentityLine string
 
-		if scanErr := rows.Scan(&station.Name, &station.Prefix, &station.Number, &station.IsActive, &station.Line); scanErr != nil {
-			err := common.ParseError(code.DatabaseRowScanFailure, "Unable to read a station.", scanErr)
+		if scanErr := rows.Scan(&stationName, &stationIdentityPrefix, &stationIdentityNumber, &stationIdentityIsActive, &stationIdentityLine); scanErr != nil {
+			err := common.ParseError(code.DatabaseRowScanFailure, "Unable to read a station from database.", scanErr)
 			return stations, err.Trace()
 		}
 
-		stations = append(stations, station)
+		station, stationExist := stations[stationName]
+		if stationExist {
+			station.Identifiers = append(station.Identifiers, StationIdentity{
+				Prefix:   stationIdentityPrefix,
+				Number:   stationIdentityNumber,
+				Line:     stationIdentityLine,
+				IsActive: stationIdentityIsActive,
+			})
+			stations[stationName] = station
+		} else {
+			stations[stationName] = Station{
+				Name: stationName,
+				Identifiers: []StationIdentity{
+					{
+						Prefix:   stationIdentityPrefix,
+						Number:   stationIdentityNumber,
+						Line:     stationIdentityLine,
+						IsActive: stationIdentityIsActive,
+					},
+				},
+			}
+		}
 	}
 
 	if rowErr := rows.Err(); rowErr != nil {

@@ -10,6 +10,6 @@ type Database interface {
 }
 
 type Railway interface {
-	Stations() ([]railway.Station, errorr.Entity)
+	Stations() (map[string]railway.Station, errorr.Entity)
 	Lines() ([]railway.Line, errorr.Entity)
 }

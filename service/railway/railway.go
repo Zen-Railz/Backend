@@ -5,38 +5,30 @@ import (
 )
 
 func (s *Service) Stations() (interface{}, errorr.Entity) {
-	dbStations, dbResErr := s.railwayRepo.Stations()
-	if dbResErr != nil {
-		dbResErr.Trace()
-		s.logger.Error(dbResErr.Elaborate(), nil)
-		return nil, dbResErr
+	repoStations, repoErr := s.railwayRepo.Stations()
+	if repoErr != nil {
+		repoErr.Trace()
+		s.logger.Error(repoErr.Elaborate(), nil)
+		return nil, repoErr
 	}
 
 	stations := make(map[string]map[string]interface{})
-	for _, dbStation := range dbStations {
-		stationName := dbStation.Name
-		stationPrefix := dbStation.Prefix
-		stationNumber := dbStation.Number
+	for _, repoStation := range repoStations {
+		stations[repoStation.Name] = make(map[string]interface{})
 
-		station, stationExist := stations[stationName]
-		if stationExist {
-			lineNumbers, lineExist := station[stationPrefix]
-			if lineExist {
-				switch v := lineNumbers.(type) {
+		for _, identity := range repoStation.Identifiers {
+			numberContainer, prefixExist := stations[repoStation.Name][identity.Prefix]
+			if prefixExist {
+				switch v := numberContainer.(type) {
 				case int:
-					station[stationPrefix] = []int{v, stationNumber}
+					stations[repoStation.Name][identity.Prefix] = []int{v, identity.Number}
 				case []int:
-					numberList := lineNumbers.([]int)
-					numberList = append(numberList, stationNumber)
-					station[stationPrefix] = numberList
+					numberList := numberContainer.([]int)
+					stations[repoStation.Name][identity.Prefix] = append(numberList, identity.Number)
 				}
 			} else {
-				station[stationPrefix] = stationNumber
+				stations[repoStation.Name][identity.Prefix] = identity.Number
 			}
-		} else {
-			newStation := make(map[string]interface{})
-			newStation[stationPrefix] = stationNumber
-			stations[stationName] = newStation
 		}
 	}
 

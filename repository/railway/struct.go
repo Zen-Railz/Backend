@@ -7,7 +7,11 @@ type Repository struct {
 }
 
 type Station struct {
-	Name     string
+	Name        string
+	Identifiers []StationIdentity
+}
+
+type StationIdentity struct {
 	Prefix   string
 	Number   int
 	Line     string
