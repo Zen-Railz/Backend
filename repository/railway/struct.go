@@ -25,3 +25,16 @@ type Line struct {
 	IsActive     bool
 	Announcement string
 }
+
+type NetworkNode struct {
+	StationName          string
+	StationIdentities    map[string]StationIdentity
+	PreviousStationNames StationNameSet
+	NextStationNames     StationNameSet
+}
+
+type StationNameSet map[string]struct{}
+
+func (s StationNameSet) Add(name string) {
+	s[name] = struct{}{}
+}

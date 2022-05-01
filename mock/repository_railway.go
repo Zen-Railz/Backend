@@ -23,6 +23,10 @@ func (r *RailwayRepository) Lines() ([]railway.Line, errorr.Entity) {
 	return r.lines, r.sourceError
 }
 
+func (r *RailwayRepository) Network() (map[string]*railway.NetworkNode, map[string]*railway.NetworkNode, errorr.Entity) {
+	return nil, nil, nil
+}
+
 func (r *RailwayRepository) EmptyStations() *RailwayRepository {
 	r.stations = make(map[string]railway.Station)
 	return r

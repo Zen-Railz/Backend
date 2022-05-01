@@ -14,4 +14,5 @@ type Native interface {
 type Railway interface {
 	Stations() (interface{}, errorr.Entity)
 	Lines() ([]railway.Line, errorr.Entity)
+	Journey(originStationName string, destinationStationName string) (interface{}, errorr.Entity)
 }

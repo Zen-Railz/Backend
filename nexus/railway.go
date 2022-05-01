@@ -33,3 +33,19 @@ func (s *Store) RailwayLines() gin.HandlerFunc {
 		}
 	}
 }
+
+func (s *Store) RailwayJourney() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		origin := c.Query("origin")
+		destination := c.Query("destination")
+		nameMap, err := s.railwaySvc.Journey(origin, destination)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, ErrorResponse{
+				Code:    err.Code(),
+				Message: "Unable to retrieve journey.",
+			})
+		} else {
+			c.JSON(http.StatusOK, nameMap)
+		}
+	}
+}

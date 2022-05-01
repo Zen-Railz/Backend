@@ -20,4 +20,5 @@ func ConfigureRoute(engine *gin.Engine, nexus *nexus.Store) {
 	railway := engine.Group("/railway")
 	railway.GET("/stations", nexus.RailwayStations())
 	railway.GET("/lines", nexus.RailwayLines())
+	railway.GET("/journey", nexus.RailwayJourney())
 }
