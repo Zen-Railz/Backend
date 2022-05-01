@@ -12,5 +12,5 @@ type Database interface {
 type Railway interface {
 	Stations() (map[string]railway.Station, errorr.Entity)
 	Lines() ([]railway.Line, errorr.Entity)
-	Network() (map[string]*railway.NetworkNode, map[string]*railway.NetworkNode, errorr.Entity)
+	Network() (map[string]*railway.NetworkNode, errorr.Entity)
 }

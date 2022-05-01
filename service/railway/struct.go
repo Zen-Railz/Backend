@@ -21,11 +21,14 @@ type Line struct {
 type Itinerary struct {
 	Visited map[string]struct{}
 	Path    []PathPoint
-	Id      string
 }
 
 type PathPoint struct {
-	StationName         string
-	StationIdentityCode string
-	StationLine         string
+	StationName       string
+	StationIdentities []StationIdentity
+}
+
+type StationIdentity struct {
+	Code string
+	Line string
 }

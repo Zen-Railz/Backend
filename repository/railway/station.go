@@ -61,20 +61,18 @@ func (r *Repository) Stations() (map[string]Station, errorr.Entity) {
 	return stations, nil
 }
 
-func (r *Repository) Network() (map[string]*NetworkNode, map[string]*NetworkNode, errorr.Entity) {
+func (r *Repository) Network() (map[string]*NetworkNode, errorr.Entity) {
 	stationNameMap := make(map[string]*NetworkNode)
-	stationIdentityCodeMap := make(map[string]*NetworkNode)
 
 	rows, queryErr := r.database.Query("select s.name, s.prefix, s.number, s.is_active, l.name from station s, line l where s.line = l.code order by s.prefix, s.number")
 	if queryErr != nil {
 		err := common.ParseError(code.DatabaseQueryFailure, "Unable to get stations from database.", queryErr)
-		return stationNameMap, stationIdentityCodeMap, err.Trace()
+		return stationNameMap, err.Trace()
 	}
 	defer rows.Close()
 
 	var previousNetworkNode *NetworkNode
 	var previousStationIdentityPrefix string
-	var previousStationName string
 
 	for rows.Next() {
 		var stationName string
@@ -85,21 +83,21 @@ func (r *Repository) Network() (map[string]*NetworkNode, map[string]*NetworkNode
 
 		if scanErr := rows.Scan(&stationName, &stationIdentityPrefix, &stationIdentityNumber, &stationIdentityIsActive, &stationIdentityLine); scanErr != nil {
 			err := common.ParseError(code.DatabaseRowScanFailure, "Unable to read a station from database.", scanErr)
-			return stationNameMap, stationIdentityCodeMap, err.Trace()
+			return stationNameMap, err.Trace()
 		}
 
 		stationIdentityCode := stationIdentityPrefix + strconv.Itoa(stationIdentityNumber)
 
-		networkNode, stationExist := stationNameMap[stationName]
+		currentNetworkNode, stationExist := stationNameMap[stationName]
 		if stationExist {
-			networkNode.StationIdentities[stationIdentityCode] = StationIdentity{
+			currentNetworkNode.StationIdentities[stationIdentityCode] = StationIdentity{
 				Prefix:   stationIdentityPrefix,
 				Number:   stationIdentityNumber,
 				IsActive: stationIdentityIsActive,
 				Line:     stationIdentityLine,
 			}
 		} else {
-			networkNode = &NetworkNode{
+			currentNetworkNode = &NetworkNode{
 				StationName: stationName,
 				StationIdentities: map[string]StationIdentity{
 					stationIdentityCode: {
@@ -109,23 +107,20 @@ func (r *Repository) Network() (map[string]*NetworkNode, map[string]*NetworkNode
 						Line:     stationIdentityLine,
 					},
 				},
-				PreviousStationNames: make(StationNameSet),
-				NextStationNames:     make(StationNameSet),
+				AdjacentNodes: make(map[string]*NetworkNode),
 			}
 		}
 
-		stationNameMap[stationName] = networkNode
-		stationIdentityCodeMap[stationIdentityCode] = networkNode
+		stationNameMap[stationName] = currentNetworkNode
 
 		if previousStationIdentityPrefix == stationIdentityPrefix {
-			networkNode.PreviousStationNames.Add(previousStationName)
-			previousNetworkNode.NextStationNames.Add(stationName)
+			currentNetworkNode.AdjacentNodes[previousNetworkNode.StationName] = previousNetworkNode
+			previousNetworkNode.AdjacentNodes[currentNetworkNode.StationName] = currentNetworkNode
 		}
 
-		previousNetworkNode = networkNode
+		previousNetworkNode = currentNetworkNode
 		previousStationIdentityPrefix = stationIdentityPrefix
-		previousStationName = stationName
 	}
 
-	return stationNameMap, stationIdentityCodeMap, nil
+	return stationNameMap, nil
 }

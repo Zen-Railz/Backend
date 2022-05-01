@@ -3,8 +3,10 @@ package railway
 import (
 	"container/list"
 	"fmt"
+	"strconv"
 	"zenrailz/code"
 	"zenrailz/errorr"
+	"zenrailz/repository/railway"
 )
 
 func (s *Service) Stations() (interface{}, errorr.Entity) {
@@ -60,17 +62,33 @@ func (s *Service) Lines() ([]Line, errorr.Entity) {
 	return lines, nil
 }
 
+func (s *Service) makePathPoint(networkNode *railway.NetworkNode) (PathPoint, errorr.Entity) {
+	point := PathPoint{
+		StationName: networkNode.StationName,
+	}
+
+	for _, identity := range networkNode.StationIdentities {
+		if identity.IsActive {
+			point.StationIdentities = append(point.StationIdentities, StationIdentity{
+				Code: identity.Prefix + strconv.Itoa(identity.Number),
+				Line: identity.Line,
+			})
+		}
+	}
+
+	if len(point.StationIdentities) == 0 {
+		message := fmt.Sprintf("[%s] station is currently undergoing maintenance.", point.StationName)
+		return point, errorr.New(code.RailwayServiceStationUnavailable, message, nil)
+	}
+
+	return point, nil
+}
+
 func (s *Service) Journey(originStationName string, destinationStationName string) (interface{}, errorr.Entity) {
-	//TODO: Remove identitycodemap - not-in-use
-	repoStationNameMap, _, repoErr := s.railwayRepo.Network()
+	repoStationNameMap, repoErr := s.railwayRepo.Network()
 	if repoErr != nil {
 		s.logger.Error(repoErr.Trace().Elaborate(), nil)
 		return nil, repoErr
-	}
-
-	origin, originExist := repoStationNameMap[originStationName]
-	if !originExist {
-		return nil, errorr.New(code.RailwayServiceJourneyOriginNotFound, "Journey origin not found.", nil)
 	}
 
 	destination, destinationExist := repoStationNameMap[destinationStationName]
@@ -78,24 +96,26 @@ func (s *Service) Journey(originStationName string, destinationStationName strin
 		return nil, errorr.New(code.RailwayServiceJourneyDestinationNotFound, "Journey destination not found.", nil)
 	}
 
+	origin, originExist := repoStationNameMap[originStationName]
+	if !originExist {
+		return nil, errorr.New(code.RailwayServiceJourneyOriginNotFound, "Journey origin not found.", nil)
+	}
+
+	originPathPoint, err := s.makePathPoint(origin)
+	if err != nil {
+		s.logger.Error(err.Trace().Elaborate(), nil)
+		return nil, err
+	}
+
 	journeys := [][]PathPoint{}
 	itineraries := list.New()
 
 	itinerary := Itinerary{
-		Path: []PathPoint{
-			{
-				StationName:         origin.StationName,
-				StationIdentityCode: "",
-				StationLine:         "",
-			},
-		},
+		Path:    []PathPoint{originPathPoint},
 		Visited: map[string]struct{}{},
-		Id:      "",
 	}
 
 	itineraries.PushBack(itinerary)
-
-	s.logger.Info(fmt.Sprintf("PathQueue Length: %d", itineraries.Len()))
 
 	for itineraries.Len() > 0 {
 		itineraryItem := itineraries.Front()
@@ -112,53 +132,29 @@ func (s *Service) Journey(originStationName string, destinationStationName strin
 		}
 
 		if pathPoint.StationName == destination.StationName {
-			s.logger.Info(fmt.Sprintf("(%s) Destination REACHED!", itinerary.Id))
 			journeys = append(journeys, itinerary.Path)
 		} else {
-			s.logger.Info(fmt.Sprintf("(%s)[%s] %s - is not a destination", itinerary.Id, pathPoint.StationIdentityCode, pathPoint.StationName))
 			stationNetworkNode := repoStationNameMap[pathPoint.StationName]
 
-			// TODO: exclude those non-active stations
+			for _, nextNode := range stationNetworkNode.AdjacentNodes {
+				pathPoint, err := s.makePathPoint(nextNode)
+				if err != nil {
+					s.logger.Error(err.Trace().Elaborate(), nil)
+					return nil, err
+				}
 
-			for previousStationName := range stationNetworkNode.PreviousStationNames {
 				newPath := make([]PathPoint, len(itinerary.Path))
 				copy(newPath, itinerary.Path)
-				newPath = append(newPath, PathPoint{
-					StationName:         previousStationName,
-					StationIdentityCode: "",
-					StationLine:         "",
-				})
+				newPath = append(newPath, pathPoint)
 
 				newVisited := make(map[string]struct{})
-				for stationName, v := range itinerary.Visited {
-					newVisited[stationName] = v
+				for stationName, _ := range itinerary.Visited {
+					newVisited[stationName] = struct{}{}
 				}
 
 				itineraries.PushBack(Itinerary{
 					Path:    newPath,
 					Visited: newVisited,
-					Id:      itinerary.Id + "-" + previousStationName,
-				})
-			}
-
-			for nextStationName := range stationNetworkNode.NextStationNames {
-				newPath := make([]PathPoint, len(itinerary.Path))
-				copy(newPath, itinerary.Path)
-				newPath = append(newPath, PathPoint{
-					StationName:         nextStationName,
-					StationIdentityCode: "",
-					StationLine:         "",
-				})
-
-				newVisited := make(map[string]struct{})
-				for stationName, v := range itinerary.Visited {
-					newVisited[stationName] = v
-				}
-
-				itineraries.PushBack(Itinerary{
-					Path:    newPath,
-					Visited: newVisited,
-					Id:      itinerary.Id + "-" + nextStationName,
 				})
 			}
 		}
@@ -172,10 +168,8 @@ func (s *Service) Journey(originStationName string, destinationStationName strin
 
 	temp := struct {
 		Journeys interface{}
-		NameMap  interface{}
 	}{
 		Journeys: journeys,
-		NameMap:  repoStationNameMap,
 	}
 
 	return temp, nil
