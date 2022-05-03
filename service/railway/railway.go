@@ -62,29 +62,7 @@ func (s *Service) Lines() ([]Line, errorr.Entity) {
 	return lines, nil
 }
 
-func (s *Service) makePathPoint(networkNode *railway.NetworkNode) (PathPoint, errorr.Entity) {
-	point := PathPoint{
-		StationName: networkNode.StationName,
-	}
-
-	for _, identity := range networkNode.StationIdentities {
-		if identity.IsActive {
-			point.StationIdentities = append(point.StationIdentities, StationIdentity{
-				Code: identity.Prefix + strconv.Itoa(identity.Number),
-				Line: identity.Line,
-			})
-		}
-	}
-
-	if len(point.StationIdentities) == 0 {
-		message := fmt.Sprintf("[%s] station is currently undergoing maintenance.", point.StationName)
-		return point, errorr.New(code.RailwayServiceStationUnavailable, message, nil)
-	}
-
-	return point, nil
-}
-
-func (s *Service) Journey(originStationName string, destinationStationName string) (interface{}, errorr.Entity) {
+func (s *Service) Journey(originStationName string, destinationStationName string) ([][]PathPoint, errorr.Entity) {
 	repoStationNameMap, repoErr := s.railwayRepo.Network()
 	if repoErr != nil {
 		s.logger.Error(repoErr.Trace().Elaborate(), nil)
@@ -107,32 +85,31 @@ func (s *Service) Journey(originStationName string, destinationStationName strin
 		return nil, err
 	}
 
-	journeys := [][]PathPoint{}
-	itineraries := list.New()
+	journey := [][]PathPoint{}
+	bfeQueue := list.New()
 
-	itinerary := Itinerary{
+	bfeQueue.PushBack(BfeQueueObject{
 		Path:    []PathPoint{originPathPoint},
 		Visited: map[string]struct{}{},
-	}
+	})
 
-	itineraries.PushBack(itinerary)
+	for bfeQueue.Len() > 0 {
+		bfeItemPtr := bfeQueue.Front()
+		bfeQueue.Remove(bfeItemPtr)
 
-	for itineraries.Len() > 0 {
-		itineraryItem := itineraries.Front()
-		itineraries.Remove(itineraryItem)
-		itinerary := itineraryItem.Value.(Itinerary)
+		bfeItem := bfeItemPtr.Value.(BfeQueueObject)
+		pathPoint := bfeItem.Path[len(bfeItem.Path)-1]
 
-		pathPoint := itinerary.Path[len(itinerary.Path)-1]
-
-		_, hasVisited := itinerary.Visited[pathPoint.StationName]
+		_, hasVisited := bfeItem.Visited[pathPoint.StationName]
 		if hasVisited {
 			continue
 		} else {
-			itinerary.Visited[pathPoint.StationName] = struct{}{}
+			// Mark station as visited
+			bfeItem.Visited[pathPoint.StationName] = struct{}{}
 		}
 
 		if pathPoint.StationName == destination.StationName {
-			journeys = append(journeys, itinerary.Path)
+			journey = append(journey, bfeItem.Path)
 		} else {
 			stationNetworkNode := repoStationNameMap[pathPoint.StationName]
 
@@ -143,34 +120,48 @@ func (s *Service) Journey(originStationName string, destinationStationName strin
 					return nil, err
 				}
 
-				newPath := make([]PathPoint, len(itinerary.Path))
-				copy(newPath, itinerary.Path)
+				newPath := make([]PathPoint, len(bfeItem.Path))
+				copy(newPath, bfeItem.Path)
 				newPath = append(newPath, pathPoint)
 
 				newVisited := make(map[string]struct{})
-				for stationName, _ := range itinerary.Visited {
+				for stationName := range bfeItem.Visited {
 					newVisited[stationName] = struct{}{}
 				}
 
-				itineraries.PushBack(Itinerary{
+				bfeQueue.PushBack(BfeQueueObject{
 					Path:    newPath,
 					Visited: newVisited,
 				})
 			}
 		}
 
-		if len(journeys) == 3 {
+		if len(journey) == 3 {
 			break
 		}
 	}
 
-	s.logger.Info(fmt.Sprintf("Jouney Count: %d", len(journeys)))
+	return journey, nil
+}
 
-	temp := struct {
-		Journeys interface{}
-	}{
-		Journeys: journeys,
+func (s *Service) makePathPoint(networkNode *railway.NetworkNode) (PathPoint, errorr.Entity) {
+	point := PathPoint{
+		StationName: networkNode.StationName,
 	}
 
-	return temp, nil
+	for _, identity := range networkNode.StationIdentities {
+		if identity.IsActive {
+			point.StationIdentities = append(point.StationIdentities, StationIdentity{
+				Code: identity.Prefix + strconv.Itoa(identity.Number),
+				Line: identity.Line,
+			})
+		}
+	}
+
+	if len(point.StationIdentities) == 0 {
+		message := fmt.Sprintf("[%s] station is currently undergoing maintenance.", point.StationName)
+		return point, errorr.New(code.RailwayServiceStationUnavailable, message, nil)
+	}
+
+	return point, nil
 }

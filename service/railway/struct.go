@@ -18,7 +18,7 @@ type Line struct {
 	Announcement string
 }
 
-type Itinerary struct {
+type BfeQueueObject struct {
 	Visited map[string]struct{}
 	Path    []PathPoint
 }
