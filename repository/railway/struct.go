@@ -25,3 +25,9 @@ type Line struct {
 	IsActive     bool
 	Announcement string
 }
+
+type NetworkNode struct {
+	StationName       string
+	StationIdentities map[string]StationIdentity
+	AdjacentNodes     map[string]*NetworkNode
+}
