@@ -7,6 +7,7 @@ import (
 
 type Service struct {
 	logger      log.Logger
+	configRepo  repository.Configuration
 	railwayRepo repository.Railway
 }
 
