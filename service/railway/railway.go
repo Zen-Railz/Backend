@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"zenrailz/code"
 	"zenrailz/errorr"
+	"zenrailz/repository/configuration"
 	"zenrailz/repository/railway"
 )
 
@@ -85,6 +86,18 @@ func (s *Service) Journey(originStationName string, destinationStationName strin
 		return nil, err
 	}
 
+	repoNumPathsToInclude, err := s.configRepo.Value(configuration.System, configuration.RailwayJourneyScope)
+	if err != nil {
+		s.logger.Error(err.Trace().Elaborate(), nil)
+		return nil, err
+	}
+	numPathsToInclude, atoiErr := strconv.Atoi(repoNumPathsToInclude)
+	if atoiErr != nil {
+		err := errorr.New("temp", "Unable to parse int", atoiErr)
+		s.logger.Error(err.Elaborate(), nil)
+		return nil, err
+	}
+
 	journey := [][]PathPoint{}
 	bfeQueue := list.New()
 
@@ -136,7 +149,7 @@ func (s *Service) Journey(originStationName string, destinationStationName strin
 			}
 		}
 
-		if len(journey) == 3 {
+		if len(journey) == numPathsToInclude {
 			break
 		}
 	}

@@ -13,9 +13,10 @@ var _ = Describe("Getting all stations from source", func() {
 	When("failed to retrieve", func() {
 		BeforeEach(func() {
 			mockLogger := mock.NewLogger()
+			mockConfigRepo := mock.NewConfigurationRepository()
 			mockRailwayRepo := mock.NewRailwayRepository().
 				SetSourceError()
-			serviceUnderTest = NewService(mockLogger, mockRailwayRepo)
+			serviceUnderTest = NewService(mockLogger, mockConfigRepo, mockRailwayRepo)
 		})
 
 		It("should return error", func() {
@@ -34,14 +35,19 @@ var _ = Describe("Getting all stations from source", func() {
 var _ = Describe("Structuring stations as output", func() {
 	var serviceUnderTest *Service
 	var mockLogger *mock.Logger
+	var mockConfigRepo *mock.ConfigurationRepository
 	var mockRailwayRepo *mock.RailwayRepository
+
+	BeforeEach(func() {
+		mockLogger = mock.NewLogger()
+		mockConfigRepo = mock.NewConfigurationRepository()
+	})
 
 	When("source returns empty result", func() {
 		BeforeEach(func() {
-			mockLogger = mock.NewLogger()
 			mockRailwayRepo = mock.NewRailwayRepository().
 				EmptyStations()
-			serviceUnderTest = NewService(mockLogger, mockRailwayRepo)
+			serviceUnderTest = NewService(mockLogger, mockConfigRepo, mockRailwayRepo)
 		})
 
 		It("should have no stations", func() {
@@ -58,8 +64,6 @@ var _ = Describe("Structuring stations as output", func() {
 	When("source returns stations", func() {
 		var stations map[string]map[string]interface{}
 
-		mockLogger := mock.NewLogger()
-
 		alphaStationName := "Station Alpha"
 		bravoStationName := "Station Bravo"
 		charlieStationName := "Station Charlie"
@@ -74,7 +78,6 @@ var _ = Describe("Structuring stations as output", func() {
 
 		BeforeEach(func() {
 			mockRailwayRepo := mock.NewRailwayRepository().
-				EmptyStations().
 				AddStation(alphaStationName, northEastLineStationPrefix, 1).
 				AddStation(alphaStationName, northEastLineStationPrefix, 20).
 				AddStation(bravoStationName, northEastLineStationPrefix, 2).
@@ -86,7 +89,7 @@ var _ = Describe("Structuring stations as output", func() {
 				AddStation(foxtrotStationName, northEastLineStationPrefix, 6).
 				AddStation(foxtrotStationName, circleLineStationPrefix, 1).
 				AddStation(foxtrotStationName, circleLineStationPrefix, 30)
-			serviceUnderTest = NewService(mockLogger, mockRailwayRepo)
+			serviceUnderTest = NewService(mockLogger, mockConfigRepo, mockRailwayRepo)
 			rawStations, _ := serviceUnderTest.Stations()
 			stations, _ = rawStations.(map[string]map[string]interface{})
 		})

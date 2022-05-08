@@ -13,9 +13,10 @@ var _ = Describe("Getting all lines from source", func() {
 	When("failed to retrieve", func() {
 		BeforeEach(func() {
 			mockLogger := mock.NewLogger()
+			mockConfigRepo := mock.NewConfigurationRepository()
 			mockRailwayRepo := mock.NewRailwayRepository().
 				SetSourceError()
-			serviceUnderTest = NewService(mockLogger, mockRailwayRepo)
+			serviceUnderTest = NewService(mockLogger, mockConfigRepo, mockRailwayRepo)
 		})
 
 		It("should return error", func() {

@@ -33,6 +33,10 @@ func (r *RailwayRepository) EmptyStations() *RailwayRepository {
 }
 
 func (r *RailwayRepository) AddStation(name string, prefix string, number int) *RailwayRepository {
+	if r.stations == nil {
+		r.EmptyStations()
+	}
+
 	station, stationExist := r.stations[name]
 	if stationExist {
 		station.Identifiers = append(station.Identifiers, railway.StationIdentity{
@@ -60,6 +64,10 @@ func (r *RailwayRepository) EmptyLines() *RailwayRepository {
 }
 
 func (r *RailwayRepository) AddLine(name string, code string, lineType string, isActive bool, announcement string) *RailwayRepository {
+	if r.lines == nil {
+		r.EmptyLines()
+	}
+
 	r.lines = append(r.lines, railway.Line{
 		Name:         name,
 		Code:         code,

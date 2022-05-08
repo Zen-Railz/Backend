@@ -8,6 +8,7 @@ import (
 	"zenrailz/log"
 	"zenrailz/nexus"
 	"zenrailz/repository"
+	configRepo "zenrailz/repository/configuration"
 	databaseRepo "zenrailz/repository/database"
 	railwayRepo "zenrailz/repository/railway"
 	"zenrailz/service"
@@ -20,6 +21,11 @@ import (
 var databaseRepositorySet = wire.NewSet(
 	databaseRepo.NewRepository,
 	wire.Bind(new(repository.Database), new(*databaseRepo.Repository)),
+)
+
+var configurationRepositorySet = wire.NewSet(
+	configRepo.NewRepository,
+	wire.Bind(new(repository.Configuration), new(*configRepo.Repository)),
 )
 
 var railwayRepositorySet = wire.NewSet(
@@ -41,6 +47,7 @@ func InitialiseNexus(logger log.Logger, db *sql.DB) *nexus.Store {
 	panic(
 		wire.Build(
 			databaseRepositorySet,
+			configurationRepositorySet,
 			railwayRepositorySet,
 
 			nativeServiceSet,
