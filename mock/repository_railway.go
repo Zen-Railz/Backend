@@ -9,12 +9,6 @@ func NewRailwayRepository() *RailwayRepository {
 	return &RailwayRepository{}
 }
 
-type RailwayRepository struct {
-	stations    map[string]railway.Station
-	lines       []railway.Line
-	sourceError errorr.Entity
-}
-
 func (r *RailwayRepository) Stations() (map[string]railway.Station, errorr.Entity) {
 	return r.stations, r.sourceError
 }
@@ -82,4 +76,10 @@ func (r *RailwayRepository) SetSourceError() *RailwayRepository {
 	r.sourceError = NewError().
 		SetCode(ErrorCode)
 	return r
+}
+
+type RailwayRepository struct {
+	stations    map[string]railway.Station
+	lines       []railway.Line
+	sourceError errorr.Entity
 }

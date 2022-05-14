@@ -5,16 +5,6 @@ import (
 	"zenrailz/environment"
 )
 
-type LogLevel int
-
-const (
-	dbg LogLevel = iota
-	inf
-	err
-)
-
-var level LogLevel
-
 func SetLevel() {
 	lvl, err := environment.LogLevel()
 
@@ -45,3 +35,13 @@ func isError(value string) bool {
 	return strings.EqualFold(value, "err") ||
 		strings.EqualFold(value, "error")
 }
+
+type LogLevel int
+
+const (
+	dbg LogLevel = iota
+	inf
+	err
+)
+
+var level LogLevel

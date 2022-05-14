@@ -1,4 +1,4 @@
-package native
+package health
 
 import (
 	"fmt"
@@ -20,20 +20,20 @@ var _ = Describe("Checking the health of the system", func() {
 		})
 
 		It("should return overall status as healthy", func() {
-			systemState := serviceUnderTest.SystemHealth()
+			systemState := serviceUnderTest.System()
 			Expect(systemState.Status).To(Equal(Healthy))
 		})
 
 		It("should return healthy for all sub-system status", func() {
-			systemState := serviceUnderTest.SystemHealth()
+			systemState := serviceUnderTest.System()
 			properties := reflect.ValueOf(*systemState)
 			for i := 0; i < properties.NumField(); i++ {
 				fieldName := properties.Type().Field(i).Name
 				fieldValue := properties.Field(i)
 
 				if fieldName != "Status" {
-					subSystemHealth := fmt.Sprintf("%s", fieldValue)
-					Expect(subSystemHealth).To(Equal(Healthy))
+					subSystem := fmt.Sprintf("%s", fieldValue)
+					Expect(subSystem).To(Equal(Healthy))
 				}
 			}
 		})
@@ -48,12 +48,12 @@ var _ = Describe("Checking the health of the system", func() {
 		})
 
 		It("should return overall status as unhealthy", func() {
-			systemState := serviceUnderTest.SystemHealth()
+			systemState := serviceUnderTest.System()
 			Expect(systemState.Status).To(Equal(Unhealthy))
 		})
 
 		It("should return unhealthy for some sub-system status", func() {
-			systemState := serviceUnderTest.SystemHealth()
+			systemState := serviceUnderTest.System()
 			properties := reflect.ValueOf(*systemState)
 
 			errorCount := 0
@@ -62,8 +62,8 @@ var _ = Describe("Checking the health of the system", func() {
 				fieldValue := properties.Field(i)
 
 				if fieldName != "Status" {
-					subSystemHealth := fmt.Sprintf("%s", fieldValue)
-					if subSystemHealth == Unhealthy {
+					subSystem := fmt.Sprintf("%s", fieldValue)
+					if subSystem == Unhealthy {
 						errorCount++
 					}
 				}

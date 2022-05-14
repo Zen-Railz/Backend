@@ -3,11 +3,16 @@ package nexus
 import "zenrailz/service"
 
 func NewStore(
-	nativeService service.Native,
+	healthService service.Health,
 	railwayService service.Railway,
 ) *Store {
 	return &Store{
-		nativeSvc:  nativeService,
+		healthSvc:  healthService,
 		railwaySvc: railwayService,
 	}
+}
+
+type Store struct {
+	healthSvc  service.Health
+	railwaySvc service.Railway
 }

@@ -20,3 +20,7 @@ func (d *Repository) Ping() errorr.Entity {
 	}
 	return nil
 }
+
+type Repository struct {
+	database *sql.DB
+}

@@ -1,4 +1,4 @@
-package native
+package health
 
 import (
 	"zenrailz/log"
@@ -10,4 +10,9 @@ func NewService(logger log.Logger, databaseRepository repository.Database) *Serv
 		logger:       logger,
 		databaseRepo: databaseRepository,
 	}
+}
+
+type Service struct {
+	logger       log.Logger
+	databaseRepo repository.Database
 }

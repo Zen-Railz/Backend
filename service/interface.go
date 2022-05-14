@@ -2,13 +2,13 @@ package service
 
 import (
 	"zenrailz/errorr"
-	"zenrailz/service/native"
+	"zenrailz/service/health"
 	"zenrailz/service/railway"
 )
 
-type Native interface {
-	SystemHealth() *native.SystemState
-	DatabaseHealth() *native.DatabaseState
+type Health interface {
+	System() *health.SystemState
+	Database() *health.DatabaseState
 }
 
 type Railway interface {

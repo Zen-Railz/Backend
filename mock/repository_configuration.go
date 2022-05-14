@@ -8,11 +8,6 @@ func NewConfigurationRepository() *ConfigurationRepository {
 	return &ConfigurationRepository{}
 }
 
-type ConfigurationRepository struct {
-	list        map[string]string
-	sourceError errorr.Entity
-}
-
 func (r *ConfigurationRepository) List(category string) (map[string]string, errorr.Entity) {
 	return r.list, r.sourceError
 }
@@ -39,4 +34,9 @@ func (r *ConfigurationRepository) SetSourceError() *ConfigurationRepository {
 	r.sourceError = NewError().
 		SetCode(ErrorCode)
 	return r
+}
+
+type ConfigurationRepository struct {
+	list        map[string]string
+	sourceError errorr.Entity
 }

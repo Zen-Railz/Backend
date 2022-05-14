@@ -45,3 +45,11 @@ func (r *Repository) Lines() ([]Line, errorr.Entity) {
 
 	return lines, nil
 }
+
+type Line struct {
+	Name         string
+	Code         string
+	Type         string
+	IsActive     bool
+	Announcement string
+}

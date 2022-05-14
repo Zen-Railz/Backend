@@ -1,4 +1,4 @@
-package native
+package health
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestNativeService(t *testing.T) {
+func TestHealthService(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Native Service Test Suite")
+	RunSpecs(t, "Health Service Test Suite")
 }

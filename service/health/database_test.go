@@ -1,4 +1,4 @@
-package native
+package health
 
 import (
 	"zenrailz/mock"
@@ -18,12 +18,12 @@ var _ = Describe("Checking the health of the database", func() {
 		})
 
 		It("should return status as healthy", func() {
-			health := serviceUnderTest.DatabaseHealth()
+			health := serviceUnderTest.Database()
 			Expect(health.Status).To(Equal(Healthy))
 		})
 
 		It("should not return any message", func() {
-			health := serviceUnderTest.DatabaseHealth()
+			health := serviceUnderTest.Database()
 			Expect(health.Message).To(BeEmpty())
 		})
 	})
@@ -37,12 +37,12 @@ var _ = Describe("Checking the health of the database", func() {
 		})
 
 		It("should return status as unhealthy", func() {
-			health := serviceUnderTest.DatabaseHealth()
+			health := serviceUnderTest.Database()
 			Expect(health.Status).To(Equal(Unhealthy))
 		})
 
 		It("should return error message", func() {
-			health := serviceUnderTest.DatabaseHealth()
+			health := serviceUnderTest.Database()
 			Expect(health.Message).To(Equal(mock.ErrorStackTraceMessage))
 		})
 	})

@@ -12,7 +12,7 @@ import (
 	databaseRepo "zenrailz/repository/database"
 	railwayRepo "zenrailz/repository/railway"
 	"zenrailz/service"
-	"zenrailz/service/native"
+	"zenrailz/service/health"
 	"zenrailz/service/railway"
 
 	"github.com/google/wire"
@@ -33,9 +33,9 @@ var railwayRepositorySet = wire.NewSet(
 	wire.Bind(new(repository.Railway), new(*railwayRepo.Repository)),
 )
 
-var nativeServiceSet = wire.NewSet(
-	native.NewService,
-	wire.Bind(new(service.Native), new(*native.Service)),
+var healthServiceSet = wire.NewSet(
+	health.NewService,
+	wire.Bind(new(service.Health), new(*health.Service)),
 )
 
 var railwayServiceSet = wire.NewSet(
@@ -50,7 +50,7 @@ func InitialiseNexus(logger log.Logger, db *sql.DB) *nexus.Store {
 			configurationRepositorySet,
 			railwayRepositorySet,
 
-			nativeServiceSet,
+			healthServiceSet,
 			railwayServiceSet,
 
 			nexus.NewStore,

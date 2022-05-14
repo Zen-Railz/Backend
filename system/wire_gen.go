@@ -16,7 +16,7 @@ import (
 	"zenrailz/repository/database"
 	"zenrailz/repository/railway"
 	"zenrailz/service"
-	"zenrailz/service/native"
+	"zenrailz/service/health"
 	railway2 "zenrailz/service/railway"
 )
 
@@ -24,7 +24,7 @@ import (
 
 func InitialiseNexus(logger log.Logger, db *sql.DB) *nexus.Store {
 	repository := database.NewRepository(db)
-	service := native.NewService(logger, repository)
+	service := health.NewService(logger, repository)
 	configurationRepository := configuration.NewRepository(db)
 	railwayRepository := railway.NewRepository(db)
 	railwayService := railway2.NewService(logger, configurationRepository, railwayRepository)
@@ -40,6 +40,6 @@ var configurationRepositorySet = wire.NewSet(configuration.NewRepository, wire.B
 
 var railwayRepositorySet = wire.NewSet(railway.NewRepository, wire.Bind(new(repository.Railway), new(*railway.Repository)))
 
-var nativeServiceSet = wire.NewSet(native.NewService, wire.Bind(new(service.Native), new(*native.Service)))
+var healthServiceSet = wire.NewSet(health.NewService, wire.Bind(new(service.Health), new(*health.Service)))
 
 var railwayServiceSet = wire.NewSet(railway2.NewService, wire.Bind(new(service.Railway), new(*railway2.Service)))

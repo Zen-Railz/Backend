@@ -31,3 +31,10 @@ var _ = Describe("New Error", func() {
 		})
 	})
 })
+
+const (
+	mockErrorCode         = "mockErrorCode"
+	mockErrorMessage      = "mockErrorMessage"
+	mockErrorFunctionName = "mockErrorFunctionName"
+	mockErrorLineNumber   = 0
+)

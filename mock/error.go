@@ -6,13 +6,6 @@ func NewError() *Error {
 	return &Error{}
 }
 
-type Error struct {
-	code              string
-	displayMessage    string
-	stackTraceMessage string
-	equalityOutcome   bool
-}
-
 func (e *Error) Code() string {
 	return e.code
 }
@@ -52,3 +45,18 @@ func (e *Error) SetEquality(isEqual bool) *Error {
 	e.equalityOutcome = isEqual
 	return e
 }
+
+type Error struct {
+	code              string
+	displayMessage    string
+	stackTraceMessage string
+	equalityOutcome   bool
+}
+
+const (
+	ErrorCode              = "mockErrorCode"
+	ErrorDisplayMessage    = "mockErrorDisplayMessage"
+	ErrorStackTraceMessage = "mockErrorStackTraceMessage"
+	ErrorFunctionName      = "mockErrorFunctionName"
+	ErrorLineNumber        = 0
+)
