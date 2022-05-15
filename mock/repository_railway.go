@@ -18,7 +18,7 @@ func (r *RailwayRepository) Lines() ([]railway.Line, errorr.Entity) {
 }
 
 func (r *RailwayRepository) Network() (map[string]*railway.NetworkNode, errorr.Entity) {
-	return nil, nil
+	return r.network, r.sourceError
 }
 
 func (r *RailwayRepository) EmptyStations() *RailwayRepository {
@@ -49,6 +49,7 @@ func (r *RailwayRepository) AddStation(name string, prefix string, number int) *
 			},
 		}
 	}
+
 	return r
 }
 
@@ -69,6 +70,7 @@ func (r *RailwayRepository) AddLine(name string, code string, lineType string, i
 		IsActive:     isActive,
 		Announcement: announcement,
 	})
+
 	return r
 }
 
@@ -78,8 +80,33 @@ func (r *RailwayRepository) SetSourceError() *RailwayRepository {
 	return r
 }
 
+func (r *RailwayRepository) EmptyNetwork() *RailwayRepository {
+	r.network = make(map[string]*railway.NetworkNode)
+	return r
+}
+
+func (r *RailwayRepository) AddNetworkNode(stationName string, stationIdentities map[string]railway.StationIdentity, adjacentNodes map[string]*railway.NetworkNode) *RailwayRepository {
+	if r.network == nil {
+		r.EmptyNetwork()
+	}
+
+	r.network[stationName] = &railway.NetworkNode{
+		StationName:       stationName,
+		StationIdentities: stationIdentities,
+		AdjacentNodes:     adjacentNodes,
+	}
+
+	return r
+}
+
 type RailwayRepository struct {
 	stations    map[string]railway.Station
 	lines       []railway.Line
+	network     map[string]*railway.NetworkNode
 	sourceError errorr.Entity
 }
+
+const (
+	RailwayJourneyOrigin      = "mockOrigin"
+	RailwayJourneyDestination = "mockDestination"
+)
