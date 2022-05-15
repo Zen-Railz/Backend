@@ -1,9 +1,11 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/Zen-Railz/Backend)](https://goreportcard.com/report/github.com/Zen-Railz/Backend) 
 [![CircleCI](https://circleci.com/gh/Zen-Railz/Backend/tree/main.svg?style=shield)](https://circleci.com/gh/Zen-Railz/Backend/tree/main)
 
+![ZenRailz Backend Logo](image/logo.svg)
+
 # Overview
 This is the backend repository of our application.
-|||
+| Domain | Description |
 |-|-|
 | Repository | [GitHub](https://github.com/Zen-Railz/Backend) |
 | Language | [Go](https://go.dev/) |
@@ -14,7 +16,6 @@ This is the backend repository of our application.
 | Test | [Gingko](https://github.com/onsi/ginkgo) <br> [Gomega](https://github.com/onsi/gomega) <br> [gotestsum](https://github.com/gotestyourself/gotestsum) |
 | Formatter | [gofmt](https://pkg.go.dev/cmd/gofmt) |
 | Dependency Injection | [Wire](https://github.com/google/wire) |
-|||
 
 # Preparation
 ## Installation of dependencies

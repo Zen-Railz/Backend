@@ -7,9 +7,8 @@ import (
 )
 
 func ConfigureRoute(engine *gin.Engine, nexus *nexus.Store) {
-	engine.GET("/", func(ctx *gin.Context) {
-		ctx.String(200, "Welcome to ZenRailz")
-	})
+	engine.StaticFile("/favicon.ico", "./static/favicon.ico")
+	engine.StaticFile("/", "./static/index.html")
 
 	health := engine.Group("/health")
 	health.GET("/", nexus.SystemHealth())
