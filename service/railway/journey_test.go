@@ -40,7 +40,7 @@ var _ = Describe("Getting a list of journey between two locations", func() {
 		})
 	})
 
-	When("invalid destination is provided", func() {
+	When("destination is invalid", func() {
 		BeforeEach(func() {
 			mockRailwayRepo = mock.NewRailwayRepository()
 			serviceUnderTest = NewService(mockLogger, mockConfigRepo, mockRailwayRepo)
@@ -58,7 +58,7 @@ var _ = Describe("Getting a list of journey between two locations", func() {
 		})
 	})
 
-	When("invalid origin is provided", func() {
+	When("origin is invalid", func() {
 		BeforeEach(func() {
 			mockRailwayRepo = mock.NewRailwayRepository().
 				AddNetworkNode(mock.RailwayJourneyDestination, nil, nil)

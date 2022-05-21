@@ -109,4 +109,5 @@ type RailwayRepository struct {
 const (
 	RailwayJourneyOrigin      = "mockOrigin"
 	RailwayJourneyDestination = "mockDestination"
+	RailwayStationName        = "mockStationName"
 )
